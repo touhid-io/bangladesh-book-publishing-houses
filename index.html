@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bangladesh Book Publishing Houses – Elite Directory</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== HERO HEADER ===== -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">বাংলাদেশ প্রকাশনী ডিরেক্টরি</div>
+      <h1>Bangladesh Book Publishing Houses</h1>
+      <p class="hero-sub">A curated directory of the most prestigious and reputable publishing houses in Bangladesh — from Dhaka's Bangla Bazar to the Ekushey Book Fair stage.</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num" id="totalCount">20</span><span class="stat-label">Total Publishers</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">5</span><span class="stat-label">Elite Tier</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">1955</span><span class="stat-label">Oldest Est.</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== CONTROLS ===== -->
+  <section class="controls-wrap">
+    <div class="controls">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Search by name, genre, location…" autocomplete="off" />
+        <button class="clear-btn" id="clearSearch" title="Clear">✕</button>
+      </div>
+      <div class="filter-btns">
+        <button class="filter-btn active" data-filter="all" id="btnAll">All Publishers</button>
+        <button class="filter-btn elite-btn" data-filter="elite" id="btnElite">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Top 5 Elite Only
+        </button>
+      </div>
+    </div>
+    <div class="result-count" id="resultCount">Showing all 20 publishers</div>
+  </section>
+
+  <!-- ===== TOP 5 SPOTLIGHT ===== -->
+  <section class="spotlight-section" id="spotlightSection">
+    <div class="spotlight-header">
+      <h2>
+        <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        The Top 5 Most Prestigious Publishers in Bangladesh
+      </h2>
+      <p>These five publishing houses are considered the gold standard of Bangladeshi publishing — judged by literary impact, longevity, author roster, and cultural significance.</p>
+    </div>
+    <div class="spotlight-grid" id="spotlightGrid"></div>
+  </section>
+
+  <!-- ===== MAIN TABLE ===== -->
+  <section class="table-section">
+    <div class="table-wrapper">
+      <table id="publishersTable">
+        <thead>
+          <tr>
+            <th class="th-rank">#</th>
+            <th class="th-name sortable" data-col="name">Publisher Name <span class="sort-icon">↕</span></th>
+            <th class="th-address">Office Address</th>
+            <th class="th-phone">Phone / Contact</th>
+            <th class="th-email">Email</th>
+            <th class="th-web">Website</th>
+            <th class="th-genre sortable" data-col="genre">Book Types <span class="sort-icon">↕</span></th>
+            <th class="th-badge">Status</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div class="no-results" id="noResults" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <p>No publishers found matching your search.</p>
+        <button onclick="clearAll()">Clear filters</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">বাংলাদেশ প্রকাশনী ডিরেক্টরি</div>
+      <p>Data compiled from publishers' official websites, Bangla Academy records, and industry sources. Last updated: March 2026.</p>
+      <p class="footer-note">For research and informational purposes. Contact information may change — always verify directly with the publisher.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
