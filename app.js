@@ -333,6 +333,20 @@ function renderSpotlight() {
 }
 
 /* ================================================================
+   HELPERS
+   ================================================================ */
+function iconSVG(type) {
+  const icons = {
+    address: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+    phone:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.83a16 16 0 0 0 6.29 6.29l1.14-.87a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
+    email:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>`,
+    web:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`,
+    star:    `<svg viewBox="0 0 24 24" fill="currentColor" width="10" height="10"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`
+  };
+  return icons[type] || "";
+}
+
+/* ================================================================
    RENDER TABLE ROWS
    ================================================================ */
 function renderTable() {
@@ -369,11 +383,13 @@ function renderTable() {
   countEl.textContent = `Showing ${data.length} of ${publishers.length} publishers`;
   document.getElementById("totalCount").textContent = publishers.length;
 
-  const tbody = document.getElementById("tableBody");
-  const noResults = document.getElementById("noResults");
+  const tbody    = document.getElementById("tableBody");
+  const mobileWrap = document.getElementById("mobileCards");
+  const noResults  = document.getElementById("noResults");
 
   if (data.length === 0) {
     tbody.innerHTML = "";
+    if (mobileWrap) mobileWrap.innerHTML = "";
     tbody.style.display = "none";
     noResults.style.display = "block";
     return;
@@ -382,19 +398,16 @@ function renderTable() {
   tbody.style.display = "";
   noResults.style.display = "none";
 
+  /* ---------- DESKTOP TABLE ---------- */
   tbody.innerHTML = data.map((p, idx) => {
     const websiteCell = p.websiteLabel
       ? `<a href="${p.website}" target="_blank" rel="noopener noreferrer">
-           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-           ${p.websiteLabel}
+           ${iconSVG('web')} ${p.websiteLabel}
          </a>`
       : `<span class="no-web">—</span>`;
 
     const badge = p.elite
-      ? `<span class="elite-badge">
-           <svg viewBox="0 0 24 24" fill="currentColor" width="10" height="10"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-           Elite #${p.eliteRank}
-         </span>`
+      ? `<span class="elite-badge">${iconSVG('star')} Elite #${p.eliteRank}</span>`
       : `<span class="regular-badge">Publisher</span>`;
 
     return `
@@ -418,15 +431,78 @@ function renderTable() {
           }
         </td>
         <td class="td-web">${websiteCell}</td>
-        <td>
-          <div class="genre-tags">
-            ${p.genres.map(g => `<span class="genre-tag">${g}</span>`).join("")}
-          </div>
-        </td>
+        <td><div class="genre-tags">${p.genres.map(g => `<span class="genre-tag">${g}</span>`).join("")}</div></td>
         <td>${badge}</td>
       </tr>
     `;
   }).join("");
+
+  /* ---------- MOBILE CARDS ---------- */
+  if (!mobileWrap) return;
+  mobileWrap.innerHTML = data.map((p, idx) => {
+    const phoneLine = p.phone !== "N/A"
+      ? p.phone.split(" / ").map(n => `<a href="tel:${n.replace(/\s/g, '')}"> ${n}</a>`).join(", ")
+      : `<span style="color:#9ca3af">Not available</span>`;
+    const emailLine = p.email !== "N/A"
+      ? `<a href="mailto:${p.email}">${p.email}</a>`
+      : `<span style="color:#9ca3af">Not available</span>`;
+    const websiteLine = p.websiteLabel
+      ? `<a class="pub-card-website-btn" href="${p.website}" target="_blank" rel="noopener noreferrer">${iconSVG('web')} ${p.websiteLabel}</a>`
+      : `<span style="color:#9ca3af">No website</span>`;
+
+    const badgeHTML = p.elite
+      ? `<span class="pub-card-badge-elite">${iconSVG('star')} Elite #${p.eliteRank}</span>`
+      : `<span class="pub-card-badge-regular">Publisher</span>`;
+
+    return `
+      <div class="pub-card ${p.elite ? 'elite-card' : ''}" id="mc-${p.id}">
+        <div class="pub-card-header" onclick="toggleCard(${p.id})">
+          <div class="pub-card-left">
+            <div class="pub-card-num">#${idx + 1} &nbsp;·&nbsp; Est. ${p.established}</div>
+            <div class="pub-card-name">${p.name}</div>
+            <div class="pub-card-name-bn">${p.nameBn}</div>
+          </div>
+          <div class="pub-card-right">
+            ${badgeHTML}
+            <div class="pub-card-chevron" id="chev-${p.id}">&#9660;</div>
+          </div>
+        </div>
+        <div class="pub-card-genres">
+          ${p.genres.map(g => `<span class="genre-chip">${g}</span>`).join("")}
+        </div>
+        <div class="pub-card-body" id="body-${p.id}">
+          <div class="pub-card-row">
+            <span class="pub-card-row-icon">${iconSVG('address')}</span>
+            <span class="pub-card-row-label">Address</span>
+            <span class="pub-card-row-val">${p.address}</span>
+          </div>
+          <div class="pub-card-row">
+            <span class="pub-card-row-icon">${iconSVG('phone')}</span>
+            <span class="pub-card-row-label">Phone</span>
+            <span class="pub-card-row-val">${phoneLine}</span>
+          </div>
+          <div class="pub-card-row">
+            <span class="pub-card-row-icon">${iconSVG('email')}</span>
+            <span class="pub-card-row-label">Email</span>
+            <span class="pub-card-row-val">${emailLine}</span>
+          </div>
+          <div class="pub-card-row">
+            <span class="pub-card-row-icon">${iconSVG('web')}</span>
+            <span class="pub-card-row-label">Website</span>
+            <span class="pub-card-row-val">${websiteLine}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function toggleCard(id) {
+  const body = document.getElementById(`body-${id}`);
+  const chev = document.getElementById(`chev-${id}`);
+  if (!body) return;
+  const isOpen = body.classList.toggle("open");
+  chev.classList.toggle("open", isOpen);
 }
 
 /* ================================================================
